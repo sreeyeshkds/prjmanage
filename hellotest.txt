@@ -1,0 +1,160 @@
+Codexpedia
+ 
+Search …
+About
+Contact
+Software release management with git
+master, the main branch, only one master branch should exist. What’s in this branch should be equivalent to what’s in production environment. No new code changes should be made directly to this branch, with the exception of a hot fix that is urgently needed to be deployed to production. In case of a hot fix, a new branch can be created off from the master branch, makde the fix, test and verify the fix, deploy it to production, merge the fix back to master and also pull the changes from master to develop branch. All other new changes should only be added to this branch after they are verified to be stable in production environment.
+
+develop, the development branch, only one develop branch should exist. this branch should have all the code from master branch plus the latest and fairly stable development code. Developers can pull new changes from this branch to their feature branch. Since developers rely on this branch to keep their feature branch up to date, it’s critical to keep this branch free of defects. Thus, a pull request should be made in order to commit new changes to the develop branch. The pull request should only be approved after the new changes have gone through code review, tested, and scheduled to next release to production. This code in this branch should be relatively stable and bug free, but it is
+
+test branch, there could have multiple test branches. Branch name for a test branch can be anything that describes the changes to be tested. A test branch should have all the code from develop branch, thus it should be checked out from develop branch. The purpose of a test branch is to test code changes from various feature branches before they get merged to develop branch. This can resovle conflicts and catch bugs before the new changes are introduced to the develop branch. If there is a bug that is very time consuming to fix and you decided to remove the changes that intrudced the bug from the next release, then this test branch can be discarded, and a new test branch from develop and pull in only the changes that are in good shape and still on the plan to be released to production.
+
+feature branch, there could have multiple feature branches. Branch name for a test branch can be anything that describes the project. Each new project should have a feature branch created off from the develop branch. A feature branch should have all the code from develop branch. It should keep up to date with the develop branch by doing pulling new changes from develop. When the code development is done and need to be tested, the changes in this branch should be merged to a test branch with another feature branches that are also ready for testing. The test branch can be deployed to a testing environment to make sure everything is fine. After it is verifed on a testing environemts, and it is still on the plan to be released to production, it can then be code reviewed and merged to the develop branch.
+
+release branch, there could have multiple release branches. It should have all the code from develop branch thus it should be created by check out from the develop branch. Each planned release cycle should have a release branch. If new changes were add to the develop branch after the release branch is created, the release branch should pull the new changes from the develop branch.
+
+release tag, a release tag should be created from a release branch that has all the new changes there were code reviewed, tested and planned to be released to production. A release tag will be used to deploy the new changes to the production environment.
+
+As an example, let’s walk through a typical software release cycle. Assume there is a plan to release new features A , B, C, and D.
+
+1. A develop branch is currently identical to master branch.
+
+2. Developers created a feature branch for A, B, C, and D off from develop branch with branch names feature-a, feature-b, feature-c, and feature-d. Each of these feature branch is currently identical to master and develop branch at the moment they were created.
+
+1
+2
+3
+4
+git checkout -b feature-a origin/develop
+git checkout -b feature-b origin/develop
+git checkout -b feature-c origin/develop
+git checkout -b feature-d origin/develop
+3. A period of time has passed by, each of the feature branch now has new changes.
+
+4. feature-a and feature-b are small features, they finished early. A test branch is created to combine the changes from feaure-a and feature-b. This test branch will have all the changes from feature-a and feature on top of the develop branch. If there are conflicts, they will be resolved and then the branch will be deployed to a test environment for testing, bugs will be fixed if found during testing.
+
+1
+2
+3
+git checkout -b test-a-b origin/develop
+git pull origin feature-a
+git pull origin reature-b
+5. feature-a and feature-b are tested and verified to be stable in testing environment. They can now be pulled into the develop branch after a code review.
+
+1
+2
+3
+git checkout develop
+git pull origin feature-a
+git pull origin feature-b
+6. Developers of feature-c and feature-d are keeping their branch up to date from the develop branch by pulling changes from the develop branch every time before they start adding new code to their feature branch. So, after the feature-a and feature-b are merged into develop branch, these features will be merged to feature-c and feature-d.
+
+1
+2
+3
+4
+git checkout feature-c
+git pull orign develop
+git checkout feature-d
+git pull orign develop
+7. Another period of time has passed, feature-c and feature-d are also completed. Another test branch is created to combine the changes from feature-c and feature-d.
+
+1
+2
+3
+git checkout -b test-c-d origin/develop
+git pull origin feature-c
+git pull origin feature-d
+8. The test branch test-c-d is deployed to a test environment, a bug is found from fetaure-d branch that it will take a lot more time to fix. A decision is made to remove feature-d from the planned release. So, this test-c-d branch can be discarded. Another test branch can be created just for feature-c or you can just use feature-c branch as test branch to deploy it to a test environment for testing.
+
+1
+2
+git checkout -b test-c origin/develop
+git pull origin feature-c
+9. The test-c branch is tested and verifeid to be stable. It can now be pulled into the develop branch after a code review.
+
+1
+2
+git checkout develop
+git pull origin feature -c
+10. The develop branch now has all the features that need to be released, a release branch is created from develop branch.
+
+1
+2
+git checkout -b release-abc origin/develop
+git push origin release-abc
+11. A tag is now created off from the release branch release-abc for deployment.
+
+1
+2
+3
+git checkout release-abc
+git tag -a release-20140727-abc -m 'release with feature a, b, and c'
+git push origin release-20140727
+12. Deploy the tag on a production server.
+
+1
+2
+git fetch origin
+git checkout release-20140727
+Another approach is to ignore the develop branch, don’t bother to have a develop branch. Feature branches will be created at the beginning a new cycle development, it will be based off from master branch, they can pull new changes from the master branch if there are new changes afterwards. Each feature branch will only contain code from the master and the new code from itself, no codes from other feature branches. When the feature branch is completed and ready for testing, a test or a release candidate branch can be created to combine one or more feature branches. This candidate branch can then be tested and verifiied on a test environment, and then a release branch can be created off from this candidate branch followed by a release tag off from the release branch. With this approach, a candidate branch can be created with any combination of various feature branches, if one combination is causing trobule it can be discarded, and another candidate branch can be created.
+
+As a summary, these are 3 of the most important things need to take care of for software release management.
+
+Make sure there is always a stable version of code base for backup.
+Make sure no code is lost during merge and deployment.
+Make sure all developers know where to get the most recent code and merge it to their feature branch.
+Search within Codexpedia
+
+ 
+Google Custom Search
+Search the entire web
+
+ 
+Google Custom Search
+Related Posts
+includeIf for creating different git identities
+base64 encode and decode in terminal on MAC
+Post request with a json using curl on command line
+Install redis on amazon aws ec2 instance
+Setting up a node js website on aws ec2 instance
+SSH set up for git on Mac OS
+Pushing a new git repo from local to remote
+unpacking compressed files in .zip .tar and .tar.gz from command line
+command line cursor movement shortcuts
+Installing drupal on Mac with Apache and MySQL
+More
+
+Drupal 8 Installation on localhost (with all errors) in Hindi / Urdu
+This video shows how to install Drupal 8 on localhost. Localhost was created using XAMPP. You can also create a web development environment by watching ...
+
+2017-03-20T09:36:03.000Z
+
+
+Quickly Install Drupal 8 or Drupal 7 with MAMP / Hosting #02
+Download Drupal 8 Development Version under: https://drupal.org/node/572834 Or download Drupal 7 (recommended) Core: https://drupal.org/project/drupal ...
+
+2014-05-11T14:57:45.000Z
+
+
+Apache install OSX using Bitnami
+http://opentutorials.org/module/445/3815.
+
+2013-03-14T16:21:34.000Z
+
+
+Installation of Drupal 7 on Ubuntu 12 lts, apache2, php, mysql and phpmyadmin
+This video shows the installation of apache2, php, mysql, phpmyadmin and Drupal 7 on Ubuntu 12 lts. See also: ...
+
+2013-11-01T15:40:02.000Z
+
+
+My Edited VideoDrupal 8 Installation Guide on Mac OS X with MAMP
+This video explain the steps of installing Drupal 8 on localhost. See the annotation!! MAMP download link : http://www.mamp.info/en/downloads/ Drupal ...
+
+2014-12-03T22:24:51.000Z
+
+← Installing apache 2.4, mysql and php5.6 on Mac Mongodb index on single field →
+  
+Copyright © Codexpedia 2016
