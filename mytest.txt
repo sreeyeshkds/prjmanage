@@ -1,4 +1,6 @@
+er branch should exist. What’s in this branch should be equivalent to what’s in production environment. No new code changes should be made directly to this branch, with the exception of a hot fix that is urgently needed to be deployed to production. In case of a hot fix, a new branch can be created off from the master branch, makde the fix, test and verify the fix, deploy it to production, merge the fix back to master and also pull the changes from master to develop branch. All other new changes should only be added to this branch after they are verified to be stable in production environment.
 
+develop, the development branch, only one develop branch should exist. this branch should have all the code from master branch plus the latest and fairly stable development code. Developers can pull new changes from this branch to their feature branch. Since developers rely on this branch to keep their feature branch up to date, it’s critical to keep this 
 sdfasfadf
 
 adfadfafasf
