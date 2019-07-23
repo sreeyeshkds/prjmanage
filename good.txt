@@ -1,0 +1,20 @@
+n feature-a
+git pull origin feature-b
+6. Developers of feature-c and feature-d are keeping their branch up to date from the develop branch by pulling changes from the develop branch every time before they start adding new code to their feature branch. So, after the feature-a and feature-b are merged into develop branch, these features will be merged to feature-c and feature-d.
+
+1
+2
+3
+4
+git checkout feature-c
+git pull orign develop
+git checkout feature-d
+git pull orign develop
+7. Another period of time has passed, feature-c and feature-d are also completed. Another test branch is created to combine the changes from feature-c and feature-d.
+
+1
+2
+3
+git checkout -b test-c-d origin/develop
+git pull origin feature-c
+git pull origin feature-ds
