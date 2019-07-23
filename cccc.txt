@@ -1,0 +1,13 @@
+1
+2
+3
+git checkout -b test-a-b origin/develop
+git pull origin feature-a
+git pull origin reature-b
+5. feature-a and feature-b are tested and verified to be stable in testing environment. They can now be pulled into the develop branch after a code review.
+
+1
+2
+3
+git checkout develop
+git pull origin feature-a
